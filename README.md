@@ -7,5 +7,7 @@ Chest X-Ray Image classification model. Base model is a CNN with residual connec
 
 ## Citations
 ```
-SAIT, UNAIS; k v, Gokul Lal; Prajapati, Sunny; Bhaumik, Rahul; Kumar, Tarun; S, Sanjana; Bhalla , Kriti  (2020), “Curated Dataset for COVID-19 Posterior-Anterior Chest Radiography Images (X-Rays).”, Mendeley Data, V1, doi: 10.17632/9xkhgts2s6.1
+SAIT, UNAIS; k v, Gokul Lal; Prajapati, Sunny; Bhaumik, Rahul; Kumar, Tarun; S, Sanjana; Bhalla , Kriti
+(2020), “Curated Dataset for COVID-19 Posterior-Anterior Chest Radiography Images (X-Rays).”,
+Mendeley Data, V1, doi: 10.17632/9xkhgts2s6.1
 ```
