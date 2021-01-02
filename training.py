@@ -12,6 +12,7 @@ Note: Should figure out how to implement command line
 import argparse
 from pathlib import Path
 import json
+import copy
 
 import torch
 import torch.nn as nn
@@ -137,6 +138,7 @@ def main(args):
     
     # Train for specified number of epochs.
     best_acc = 0.0
+    best_weights = copy.deepcopy(model.state_dict())
     for epoch in range(args.epochs):
         train_scores = epoch_phase(model, criterion, optimizer, loader=train_dl, device=device, phase='train')
         val_scores = epoch_phase(model, criterion, optimizer, loader=val_dl, device=device, phase='val')
@@ -145,8 +147,10 @@ def main(args):
         
         if val_scores['val_acc'] > best_acc:
             best_acc = val_scores['val_acc']
+            best_weights = copy.deepcopy(model.state_dict())
             
     # Save the trained model to specified path.
+    model.load_state_dict(best_weights)
     PATH = args.save_path
     torch.save(model, PATH)
     
