@@ -32,6 +32,7 @@ import torchvision.transforms as tf
 
 # Define the main function.
 def main(args):
+    
     # Clear the destination directory if it already exists.
     if Path(args.dst_dir).is_dir():
         rmtree(Path(args.dst_dir))
@@ -51,10 +52,6 @@ def main(args):
         Path(dst_path).mkdir(parents=True)
         
     
-    # Get DataFrame with columns for image path and class label.
-    #path_label_tuples = [(str(img_path), img_path.parent.stem.split('-')[0]) for img_path in sorted(Path(src_dir).glob('**/*.jpg'))]
-    #df = pd.DataFrame(path_label_tuples, columns=['path','label'])
-    
     df = pd.DataFrame([(str(img_path),img_path.parent.stem.split('-')[0]) 
                        for img_path in sorted(Path(args.src_dir).glob('**/*.jpg'))],columns=['path','label'])
     
@@ -67,15 +64,12 @@ def main(args):
     val_df = val_df.reset_index(drop=True)
     test_df = test_df.reset_index(drop=True)
     
-    # Move image copies to the split directories.
-    #train_df['path'] = train_df.apply(copy_images,split='train',axis=1)
-    #val_df['path'] = val_df.apply(copy_images,split='val',axis=1)
-    #test_df['path'] = test_df.apply(copy_images,split='test',axis=1)
-    
-    
     train_df['path'] = train_df.apply(copy_images,split_path=(Path(args.dst_dir)/'train').resolve(),axis=1)
     val_df['path'] = val_df.apply(copy_images,split_path=(Path(args.dst_dir)/'val').resolve(),axis=1)
     test_df['path'] = test_df.apply(copy_images,split_path=(Path(args.dst_dir)/'test').resolve(),axis=1)
+    
+    # Remove the source directory.
+    rmtree(Path(args.src_dir))
 
     # Add column to specify the split.
     train_df['split'] = 'train'
@@ -117,14 +111,13 @@ def rmtree(root):
     
 
 def download_dataset(args):
+    
     # Initialize the api object.
     api = KaggleApi()
     api.authenticate()
-    #path = str(Path.cwd()/args.src_dir)
-    path = None
+    
     # Download the dataset zip file.
-    #api.dataset_download_files(args.dataset, path=args.dl_path, force = args.kforce, unzip=args.unzip)
-    api.dataset_download_cli(args.dataset, path = path, force=args.kforce, unzip=args.unzip)
+    api.dataset_download_cli(args.dataset, force=args.kforce, unzip=args.unzip)
     
     
 def copy_images(x, split_path):
