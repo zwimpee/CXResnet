@@ -19,8 +19,12 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+from torch.utils.tensorboard import SummaryWriter
+#import utils
+from utils import n_random_samples, show_predictions
+from preprocessing import rmtree
 
-import architecture
+from architecture import ResidualNet, ConvNet
 from sklearn.metrics import balanced_accuracy_score
 
 # Printing out the results after each epoch.
@@ -71,7 +75,7 @@ def epoch_phase(model, criterion, optimizer, loader, device, phase):
             
         
 
-        # Increment the epoch training loss (scaled by batch size).
+        # Deavgerage and increment the epoch training loss.
         epoch_loss += loss.item() * inputs.size(0)
         
     # Calculate the training loss and accuracy score.
@@ -88,7 +92,7 @@ def epoch_phase(model, criterion, optimizer, loader, device, phase):
 
 def main(args):
     # Assign device as GPU if available, else CPU.
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('Using device:', device)
 
     # Print GPU information if using cuda.
@@ -119,22 +123,51 @@ def main(args):
             transforms.Normalize(mean, std)
         ]))
     
-    train_dl = torch.utils.data.DataLoader(trainset,batch_size=args.batch_size,
-                                           shuffle=True,pin_memory=True)
+    valset = torchvision.datasets.ImageFolder(
+        valdir, transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std)
+        ]))
     
-    val_dl = torch.utils.data.DataLoader(
+    
+    train_dl = torch.utils.data.DataLoader(trainset,batch_size=args.batch_size,shuffle=True,pin_memory=args.memory_pinning, num_workers=args.workers)
+    
+    val_dl = torch.utils.data.DataLoader(valset,batch_size=2*args.batch_size,shuffle=False,pin_memory=args.memory_pinning, num_workers=args.workers)
+    
+    """val_dl = torch.utils.data.DataLoader(
         torchvision.datasets.ImageFolder(valdir, transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)
         ])),
-        batch_size=2*args.batch_size,shuffle=False,pin_memory=True)
+        batch_size=2*args.batch_size,shuffle=False,pin_memory=True)"""
     
     # Initialize model, loss function, and optimizer.
-    model = architecture.ResidualNet().to(device)
+    if args.arch == "res":
+        model = ResidualNet().to(device)
+    else:
+        model = ConvNet().to(device)
+        
     criterion = nn.CrossEntropyLoss().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    
+    if args.optim == "adam":
+        optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    else:
+        optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+    
+    
+    # Clear tensorboard logs if specified.
+    if args.tb_clear:
+        rmtree(Path('runs'))
+    
+    # Create run folder for tensorboard.
+    run = '/'.join(['runs', args.tb_folder])
+    if Path(run).is_dir(): # clear run if it exists
+        rmtree(Path(run))    
+    writer = SummaryWriter(run)
     
     # Train for specified number of epochs.
     best_acc = 0.0
@@ -145,14 +178,35 @@ def main(args):
         
         epoch_end(epoch, train_scores, val_scores)
         
+        # Write loss and accuracy scores to TensorBoard.
+        writer.add_scalar('Loss/train', train_scores['train_loss'], epoch)
+        writer.add_scalar('Loss/val', val_scores['val_loss'], epoch)
+        writer.add_scalar('Accuracy/train', train_scores['train_acc'], epoch)
+        writer.add_scalar('Accuracy/val', val_scores['val_acc'], epoch)
+        
+        # Write some validation images and predictions to TensorBoard.
+        model.eval()
+        with torch.no_grad():
+            # Randomly select 4 validation samples.
+            inputs, labels = n_random_samples(valset, 4)
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            # Plot the sample predictions and write to TensorBoard.
+            writer.add_figure(
+                'sample prediction outcomes',show_predictions(
+                    model,inputs,labels),global_step=epoch)
+            writer.flush()
+        
         if val_scores['val_acc'] > best_acc:
             best_acc = val_scores['val_acc']
             best_weights = copy.deepcopy(model.state_dict())
+    
             
     # Save the trained model to specified path.
     model.load_state_dict(best_weights)
-    PATH = args.save_path
-    torch.save(model, PATH)
+    PATH = '/'.join(['models',args.save_path])
+    torch.save(model.state_dict(), PATH)
+    writer.close()
     
 
 if __name__ == "__main__":
@@ -161,11 +215,23 @@ if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
     
     parser = argparse.ArgumentParser(description="Model training script")
-    parser.add_argument("--data", type=str, default="data", help="name of data directory")
-    parser.add_argument("--batch-size", type=int, default=128, help="dataloader batch size")
-    parser.add_argument("--lr", type=float, default=0.001,help="optimizer learning rate")
-    parser.add_argument("--epochs",type=int, default=10,help="number of epochs to train")
-    parser.add_argument("--save-path",type=str,default="trained_model.pt", help="path to save trained model")
+    parser.add_argument("-d","--data", type=str, default="data", help="name of data directory")
+    parser.add_argument("-b","--batch-size", type=int, default=128, help="dataloader batch size")
+    
+    #parser.add_argument("--memory-pinning", type=bool, default=True, help="copies tensors to CUDA pinned memory when true")
+    parser.add_argument("-p", "--memory-pinning", action="store_true", help="copy tensors to CUDA pinned memory")
+    
+    parser.add_argument("-w","--workers",type=int, default=0, help="number of subprocesses for data loading")
+    parser.add_argument("-a","--arch", type=str, default="res", choices = ["res","conv"], help="select model architecture")
+    parser.add_argument("-o","--optim", type=str, default="adam", choices=["adam","sgd"],help="select optimizer algorithm")
+    parser.add_argument("-l","--lr", type=float, default=0.001,help="optimizer learning rate")
+    parser.add_argument("-m","--momentum", type=float, help="momentum parameter value, required when not using adam optimizer")
+    parser.add_argument("-e","--epochs",type=int, default=10,help="number of epochs to train")
+    parser.add_argument("-s","--save-path",type=str,default="trained_model.pt", help="path to save trained model")
+    
+    #parser.add_argument("--tb-clear", type=bool, default=False, help="clears all tensorboard logs")
+    parser.add_argument("-c","--tb-clear", action="store_true", help="clears all tensorboard logs")
+    parser.add_argument("-t","--tb-folder", type=str, default="cxresnet", help="tensorboard child directory for model being trained")
     args = parser.parse_args()
     main(args)
         
