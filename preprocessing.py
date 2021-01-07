@@ -1,37 +1,47 @@
-"""
-Author: Zachary Wimpee
-
-Description: Script for splitting the Curated 
-             Dataset into training, validation,
-             and testing sets using cmd line args.
-             
-Note: Viral and bacterial pneumonia images have been
-      combined into a single pneumonia class label.
-"""
+###############################################################################
+# CXResnet project data preprocessing
+#
+# Author: Zachary Wimpee
+#
+# This file contains the code for downloading Curated X-Ray Dataset from Kaggle,
+# getting the train/validation/testing splits, and calculating the values needed
+# for normalization from the training data. Options are configurable via command
+# line arguments from the user upon execution. 
+#
+#
+# NOTE - Original dataset has separate classes for viral and bacterial pneumonia.
+#        This distinction has been removed for the sake of model performance.
+#        Future work on this project should attempt to reintroduce this
+#        distinction and modify the network architecture accordingly.
+###############################################################################
 
 import argparse
 from pathlib import Path
 import json
 import shutil
-from kaggle.api.kaggle_api_extended import KaggleApi
+
 import pandas as pd
 import numpy as np
+
+from kaggle.api.kaggle_api_extended import KaggleApi
+
 
 from sklearn.model_selection import train_test_split
 
 
 import torch
 from torchvision.datasets import ImageFolder
-import torchvision.transforms as tf
+import torchvision.transforms as transforms
 
 
 
 
-
-
-
-# Define the main function.
 def main(args):
+    """
+    This function is the main body for the file, but the functions
+    defined outside of it can be imported and used independently in
+    other files.
+    """
     
     # Clear the destination directory if it already exists.
     if Path(args.dst_dir).is_dir():
@@ -98,6 +108,7 @@ def main(args):
 
 
 def rmtree(root):
+    "Clear a directory and remove it."
     if not root.is_dir():
         print('Folder or directory does not exist.')
         return 
@@ -111,7 +122,7 @@ def rmtree(root):
     
 
 def download_dataset(args):
-    
+    "Download kaggle dataset via its API."
     # Initialize the api object.
     api = KaggleApi()
     api.authenticate()
@@ -121,6 +132,11 @@ def download_dataset(args):
     
     
 def copy_images(x, split_path):
+    """
+    When applied to rows of a pandas DataFrame object the files in 
+    the 'path' column are copied and moved to a folder associated with
+    the 'label' column.
+    """
     # Get source image path.
     source = x.path
     
@@ -132,12 +148,17 @@ def copy_images(x, split_path):
 
 
 def mean_std_calcs(args):
+    "Calculate channel mean and standard deviations for a set of image files."
     
     # Get path to training folder.
     path = (Path(args.dst_dir)/'train').resolve()
     
     # Load dataset with ImageFolder.
-    dataset = ImageFolder(path, transform=tf.Compose([tf.Resize(256),tf.CenterCrop(224),tf.ToTensor()]))
+    dataset = ImageFolder(path, transform=transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor()
+    ]))
     
     # Get num_samples random indices.
     indices = torch.randperm(len(dataset))[:args.n_samples]
@@ -159,15 +180,14 @@ def mean_std_calcs(args):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Dataset creation for Chest X-Ray image classification project.")
-    parser.add_argument("--dataset", type=str, default="unaissait/curated-chest-xray-image-dataset-for-covid19", help="dataset url suffix")
+    parser.add_argument("-u","--dataset", type=str, default="unaissait/curated-chest-xray-image-dataset-for-covid19", help="dataset url suffix")
     parser.add_argument("--src-dir", type=str, default="Curated X-Ray Dataset/", help="path to source dataset to be split")
     parser.add_argument("--dst-dir", type=str, default="data/", help="path to destination parent directory for train/validation/testing splits")
-    parser.add_argument("--test-split", type=float, default=0.2, help="float value for fraction of total data to use for test split")
-    parser.add_argument("--val-split", type=float, default=0.25,
-                        help="float value for fraction of remaining train data to use for validation split")
-    parser.add_argument("--n-samples", '-n', type=int,default=1000,help="number of training samples for calculating normalization constants")
-    parser.add_argument("--download", type=bool,default=False,help="choice to download original dataset")
-    parser.add_argument("--kforce", type=bool,default=False,help="choice to download if original dataset already exists")
-    parser.add_argument("--unzip", type=bool,default=True,help="choice unzip downloaded dataset")
+    parser.add_argument("-t","--test-split", type=float, default=0.2, help="float value for fraction of total data to use for test split")
+    parser.add_argument("-v","--val-split", type=float, default=0.25,help="float value for fraction of remaining train data to use for validation split")
+    parser.add_argument('-n',"--n-samples",  type=int,default=1000,help="number of training samples for calculating normalization constants")
+    parser.add_argument("-d","--download", action="store_true",help="download the original dataset")
+    parser.add_argument("-f","--kforce", type=bool,default=False,help="choice to download if original dataset already exists")
+    parser.add_argument("-z","--unzip", type=bool,default=True,help="choice unzip downloaded dataset")
     args = parser.parse_args()
     main(args)

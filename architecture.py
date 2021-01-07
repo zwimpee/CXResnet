@@ -1,14 +1,17 @@
-"""
-This file contains the components and framework for 
-the model architecture.
-"""
-
+###############################################################################
+# CXResnet network components and model architecture
+#
+# Author: Zachary Wimpee
+#
+# This file defines the full model architecture using the component structures 
+# created by subclassing PyTorch's nn.Module. 
+#
+###############################################################################
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
-# Class for defining stack of layers.
 class LayerStack(nn.Module):
     """
     Create an object to apply at least one layer to input, with 
@@ -38,10 +41,6 @@ class LayerStack(nn.Module):
             x = self.layers(x)
         return x
 
-    
-    
-
-# Class for implementing a residual connection.
 class ResidualLayer(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
         super(ResidualLayer, self).__init__()
@@ -78,11 +77,6 @@ class ResidualLayer(nn.Module):
         out += identity
         return out
     
-
-
-    
-    
-# Simple convolutional network.
 class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()
@@ -102,11 +96,9 @@ class ConvNet(nn.Module):
         l5 = [nn.ReLU(),nn.MaxPool2d(kernel_size=2,stride=2),nn.BatchNorm2d(512)]
         self.conv5 = LayerStack(nn.Conv2d,layers=l5,in_channels=256,out_channels=512,kernel_size=3,padding = 1)
         
-        
         self.fc1 = LayerStack(nn.Linear, layers = [nn.ReLU(),nn.BatchNorm1d(64)], in_features = 512*7*7, out_features = 64)
         self.classifier = LayerStack(nn.Linear, in_features=64, out_features=3)
      
-        
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
@@ -118,9 +110,6 @@ class ConvNet(nn.Module):
         x = self.classifier(x)
         return x
     
-    
-    
-# Simple network containing residual connection layers.
 class ResidualNet(nn.Module):
     def __init__(self):
         super(ResidualNet, self).__init__()
@@ -133,23 +122,9 @@ class ResidualNet(nn.Module):
         self.layer3 = ResidualLayer(in_channels=128, out_channels=256, stride=2)
         self.layer4 = ResidualLayer(in_channels=256, out_channels=512, stride=2)
         
-        
-        
         self.fc1 = LayerStack(nn.Linear, layers = [nn.ReLU(),nn.BatchNorm1d(64)], in_features = 512*7*7, out_features = 64)
         self.classifier = LayerStack(nn.Linear, in_features=64, out_features=3)
-        
-        
-        
-        # Initialize the layer weights 
-        """for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)"""
-     
-     
-        
+           
     def forward(self, x):
         x = self.conv1(x)
         x = self.layer1(x)
