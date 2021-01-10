@@ -14,18 +14,78 @@ from pathlib import Path
 import json
 import copy
 
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+import random
+
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
 #import utils
-from utils import n_random_samples, show_predictions
+#from utils import n_random_samples, show_predictions
 from preprocessing import rmtree
 
 from architecture import ResidualNet, ConvNet
 from sklearn.metrics import balanced_accuracy_score
+
+classes = ('COVID','Normal','Pneumonia')
+
+
+def imshow_raw(img, mean, std):
+    """Show unnormalized image tensor."""
+    img = img.cpu().detach().numpy().transpose((1, 2, 0))
+    mean = np.array(mean)
+    std = np.array(std)
+    img = std * img + mean
+    img = np.clip(img, 0, 1)
+    plt.imshow(img)
+
+def n_random_samples(dataset, n_samples = 100):
+    # Get n_samples number of dataset indices.
+    n = torch.randperm(len(dataset))[:n_samples].tolist()
+    
+    images = torch.stack([dataset[i][0] for i in n])
+    labels = torch.tensor([dataset[i][1] for i in n])
+    
+    return images, labels
+
+def prediction_probs(model, images):
+    # Get model outputs for input images.
+    outputs = model(images)
+    
+    # Get index of predicted class.
+    preds = outputs.argmax(dim=1).tolist()
+    
+    # Get the probability of the predictions.
+    probs = [F.softmax(outputs[i],dim=0)[preds[i]].item() for i in range(len(preds))]
+    
+    return preds, probs
+
+def show_predictions(model, images, labels, mean, std):
+    # Get predicted labels and the probabilities.
+    preds, probs = prediction_probs(model, images)
+    
+    # Get the size of the mini-batch.
+    size = len(images)
+    
+    # Initialize figure for showing images and predictions.
+    fig = plt.figure(figsize=(24,24*size))
+    
+    # Plot each image and color by prediction outcome.
+    for i in range(size):
+        ax = fig.add_subplot(1,size,i+1,xticks=[],yticks=[])
+        imshow_raw(images[i], mean, std)
+        ax.set_title("{0}, {1:.1f}%\n(label: {2})".format(
+            classes[preds[i]],
+            probs[i] * 100.0,
+            classes[labels[i]]),
+                    color=("green" if preds[i]==labels[i].item() else "red"))
+    return fig
 
 # Printing out the results after each epoch.
 def epoch_end(epoch, train_scores, val_scores):
@@ -136,14 +196,7 @@ def main(args):
     
     val_dl = torch.utils.data.DataLoader(valset,batch_size=2*args.batch_size,shuffle=False,pin_memory=args.memory_pinning, num_workers=args.workers)
     
-    """val_dl = torch.utils.data.DataLoader(
-        torchvision.datasets.ImageFolder(valdir, transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean, std)
-        ])),
-        batch_size=2*args.batch_size,shuffle=False,pin_memory=True)"""
+    
     
     # Initialize model, loss function, and optimizer.
     if args.arch == "res":
@@ -193,8 +246,10 @@ def main(args):
             labels = labels.to(device)
             # Plot the sample predictions and write to TensorBoard.
             writer.add_figure(
-                'sample prediction outcomes',show_predictions(
-                    model,inputs,labels),global_step=epoch)
+                'sample prediction outcomes',
+                show_predictions(
+                    model,inputs,
+                    labels,mean,std),global_step=epoch)
             writer.flush()
         
         if val_scores['val_acc'] > best_acc:
