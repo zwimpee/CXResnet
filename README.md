@@ -39,3 +39,8 @@ SAIT, UNAIS; k v, Gokul Lal; Prajapati, Sunny; Bhaumik, Rahul; Kumar, Tarun; S, 
 (2020), “Curated Dataset for COVID-19 Posterior-Anterior Chest Radiography Images (X-Rays).”,
 Mendeley Data, V1, doi: 10.17632/9xkhgts2s6.1
 ```
+```
+Cleverley Joanne, Piper James, Jones Melvyn M.
+The role of chest radiography in confirming covid-19 pneumonia
+BMJ 2020; 370 :m2426
+```
