@@ -7,10 +7,13 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] *create useage guide for reproducing and modifying project* 
 ## Project procedures and results
 ### Motivation and Background
+  The COVID-19 pandemic has presented seemingly all areas of society with a host of new and unprecedented challenges, many of which are faced in the healthcare field. While many people living in developed countries are fortunate enough to have relatively easy access to testing, those living in developing or impoverished countries may not be afforded this same luxury. 
+  The virus, however, does not discriminate, and therefore additional tools are needed to aid in diagnosing infected patients when the number of tests available are limited (or perhaps even nonexistent). 
+
 - Motivation
-  - [ ] Explain the problem
+  - [x] Explain the problem 
   - [ ] Propose solution(s)
-  - [ ] Describe the value of project deliverables w.r.t. proposed solution
+  - [ ] Describe the value of project deliverables w.r.t. proposed solution 
 - Background
   - [ ] Summarize how chest X-rays are read
   - [ ] Relate this to the expected end results
@@ -35,4 +38,9 @@ This project is an attempt to produce an image classification model that can dis
 SAIT, UNAIS; k v, Gokul Lal; Prajapati, Sunny; Bhaumik, Rahul; Kumar, Tarun; S, Sanjana; Bhalla , Kriti
 (2020), “Curated Dataset for COVID-19 Posterior-Anterior Chest Radiography Images (X-Rays).”,
 Mendeley Data, V1, doi: 10.17632/9xkhgts2s6.1
+```
+```
+Cleverley Joanne, Piper James, Jones Melvyn M.
+The role of chest radiography in confirming covid-19 pneumonia
+BMJ 2020; 370 :m2426
 ```
