@@ -29,8 +29,8 @@ This project is an attempt to produce an image classification model that can dis
 ### Insight and Interpretability
 - [ ] Show and discuss results of input attribution obtained using Captum
 
-
-
+![alt text](figures/occlusion_attribution_COVID-19_(284).png)
+![alt text](figures/occlusion_attribution_Normal_(429).png)
 
 
 ## Credits
