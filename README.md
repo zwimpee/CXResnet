@@ -7,13 +7,16 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] *create useage guide for reproducing and modifying project* 
 ## Project procedures and results
 ### Motivation and Background
-  The COVID-19 pandemic has presented seemingly all areas of society with a host of new and unprecedented challenges, many of which are faced in the healthcare field. While many people living in developed countries are fortunate enough to have relatively easy access to testing, those living in developing or impoverished countries may not be afforded this same luxury. 
-  The virus, however, does not discriminate, and therefore additional tools are needed to aid in diagnosing infected patients when the number of tests available are limited (or perhaps even nonexistent). 
+  The COVID-19 pandemic has presented seemingly all areas of society with a host of new and unprecedented challenges, many of which are faced in the healthcare field. While many people living in developed countries are fortunate enough to have relatively easy access to testing, those living in developing or impoverished countries may not be afforded this same luxury.
+  
+  The virus, however, does not discriminate, and therefore additional tools are needed to aid in diagnosing infected patients when the number of tests available are limited (or perhaps even nonexistent). This project explores the use of neural network image classification models as a potential tool in such situations.
+  
+  With that being said it is important to acknowledge that a predictive model by itself might not be the most useful tool for healthcare professionals, even for a model with excellent predictive power. This is especially true for a neural network model by itself, which can leave much to be desired with respect to the interpretability of the results. Therefore the primary goals for this project is to provide both a predictive model with a nontrivial degree of predictive power, and an intuitive communication of what the model "sees" when making its predictions. The latter will be achieved using the Captum library for PyTorch model interpretability. 
 
 - Motivation
   - [x] Explain the problem 
-  - [ ] Propose solution(s)
-  - [ ] Describe the value of project deliverables w.r.t. proposed solution 
+  - [x] Propose solution(s)
+  - [x] Describe the value of project deliverables w.r.t. proposed solution 
 - Background
   - [ ] Summarize how chest X-rays are read
   - [ ] Relate this to the expected end results
