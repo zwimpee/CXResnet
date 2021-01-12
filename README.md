@@ -12,6 +12,9 @@ This project is an attempt to produce an image classification model that can dis
   The virus, however, does not discriminate, and therefore additional tools are needed to aid in diagnosing infected patients when the number of tests available are limited (or perhaps even nonexistent). This project explores the use of neural network image classification models as a potential tool in such situations.
   
   With that being said it is important to acknowledge that a predictive model by itself might not be the most useful tool for healthcare professionals, even for a model with excellent predictive power. This is especially true for a neural network model by itself, which can leave much to be desired with respect to the interpretability of the results. Therefore the primary goals for this project is to provide both a predictive model with a nontrivial degree of predictive power, and an intuitive communication of what the model "sees" when making its predictions. The latter will be achieved using the Captum library for PyTorch model interpretability. 
+  
+  For those without any prior training in medicine such as myself, it might be useful to know some [basics on reading chest X-rays](https://iem-student.org/how-to-read-chest-x-rays/):
+  
 
 - Motivation
   - [x] Explain the problem 
