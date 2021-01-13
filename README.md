@@ -26,13 +26,6 @@ This project is an attempt to produce an image classification model that can dis
   - https://pubs.rsna.org/doi/10.1148/ryct.2020200280 
   - https://rdcu.be/cdvSJ
 - - - 
-- Motivation
-  - [x] Explain the problem 
-  - [x] Propose solution(s)
-  - [x] Describe the value of project deliverables w.r.t. proposed solution 
-- Background
-  - [ ] Summarize how chest X-rays are read
-  - [ ] Relate this to the expected end results
 ### Data wrangling
 - [ ] Summarize data sources, and processing
 ### Model Architecture
