@@ -50,3 +50,5 @@ Cleverley Joanne, Piper James, Jones Melvyn M.
 The role of chest radiography in confirming covid-19 pneumonia
 BMJ 2020; 370 :m2426
 ```
+
+The files in the original dataset are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode)
