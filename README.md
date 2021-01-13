@@ -5,8 +5,9 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] *determine complete set of dependencies*
 #### Usage
 - [ ] *create useage guide for reproducing and modifying project* 
-* * *
+
 ## Project procedures and results
+- - -
 ### Motivation and Background
   The COVID-19 pandemic has presented seemingly all areas of society with a host of new and unprecedented challenges, many of which are faced in the healthcare field. While many people living in developed countries are fortunate enough to have relatively easy access to testing, those living in developing or impoverished countries may not be afforded this same luxury.
   
@@ -28,20 +29,24 @@ This project is an attempt to produce an image classification model that can dis
 - - - 
 ### Data wrangling
 - [ ] Summarize data sources, and processing
+- - -
 ### Model Architecture
 - [ ] Get simple visual representation of model architecture
+- - -
 ### Training 
 - [ ] Describe the structure of the training code
 - [ ] Show plots of training history
+- - -
 ### Testing
 - [ ] Discuss model performance on holdout test data
+- - -
 ### Insight and Interpretability
 - [ ] Show and discuss results of input attribution obtained using Captum
 
 ![alt text](figures/occlusion_attribution_COVID-19_(284).png)
 ![alt text](figures/occlusion_attribution_Normal_(429).png)
 
-
+- - -
 ## References
 This reference's dataset files are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode)
 ```
