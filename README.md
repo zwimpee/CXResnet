@@ -1,5 +1,5 @@
 # CXResnet
-This project is an attempt to produce an image classification model that can distinguish between chest X-rays labeled as either normal, pneumonia, or COVID-19. Although performance would likely be optimal using a pretrained model, the model to be trained here will have an architecture built from custom components created through subclassing PyTorch's nn.Module. Note that the data preprocessing script can be tailored to future use cases involving Kaggle datasets.
+This project is an attempt to produce an image classification model that can distinguish between chest X-rays labeled as either normal, pneumonia, or COVID-19. Although performance would likely be optimal using a pretrained model, the model to be trained here will have an architecture built from custom components created through subclassing PyTorch's nn.Module.
 
 #### Requirements
 - [ ] *determine complete set of dependencies*
