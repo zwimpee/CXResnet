@@ -38,6 +38,25 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] Show plots of training history
 - - -
 ### Testing
+<center>
+<table>
+
+<tr>
+<td>Confusion Matrix</td>
+<td>
+
+![Confusion Matrix](figures/confusion_matrix.jpg "Confusion Matrix")
+
+</td>
+</tr>
+
+
+
+</table>
+</center>
+
+
+
 - [ ] Discuss model performance on holdout test data
 - - -
 ### Insight and Interpretability
