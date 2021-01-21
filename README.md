@@ -38,13 +38,32 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] Show plots of training history
 - - -
 ### Testing
+<center>
+<table>
+
+<tr>
+<td>Confusion Matrix</td>
+<td>
+
+![Confusion Matrix](figures/confusion_matrix.jpg "Confusion Matrix")
+
+</td>
+</tr>
+
+
+
+</table>
+</center>
+
+
+
 - [ ] Discuss model performance on holdout test data
 - - -
 ### Insight and Interpretability
 - [ ] Show and discuss results of input attribution obtained using Captum
 
-![alt text](figures/occlusion_attribution_COVID-19_(284).png)
-![alt text](figures/occlusion_attribution_Normal_(429).png)
+![alt text](figures/occlusion_attribution_COVID-19_(542).png)
+![alt text](figures/occlusion_attribution_COVID-19_(1267).png)
 
 - - -
 ## References
