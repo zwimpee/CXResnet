@@ -34,6 +34,10 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] Get simple visual representation of model architecture
 - - -
 ### Training 
+
+<img src="figures/Accuracy_train.svg" width="500" height="300">
+
+
 - [ ] Describe the structure of the training code
 - [ ] Show plots of training history
 - - -
