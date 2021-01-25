@@ -34,8 +34,16 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] Get simple visual representation of model architecture
 - - -
 ### Training 
+<center>
+<table>
+<tr><th>Tracking model training</th></tr>
+<tr><td>
+  
 ![alt text](figures/acc_loss_epochs.png)
 
+</td></tr>
+</table>
+</center>
 
 - [ ] Describe the structure of the training code
 - [ ] Show plots of training history
@@ -44,17 +52,30 @@ This project is an attempt to produce an image classification model that can dis
 <center>
 <table>
 
+<tr><th>Classification Report</th><th>Confusion Matrix</th></tr>
 <tr>
-<td>Confusion Matrix</td>
 <td>
+
+| Class  |   Precision    | Recall | F-1 Score | Support
+| :--------: | :--------: | :--------: | :--------: | :--------: |
+| COVID  | 0.95 | 0.94 | 0.94 | 256
+| Normal | 0.92 | 0.96 | 0.94 | 654
+| Pneumonia | 0.97 | 0.95 | 0.96 | 935
+
+
+</td><td rowspan="3">
 
 ![Confusion Matrix](figures/confusion_matrix.jpg "Confusion Matrix")
 
-</td>
-</tr>
+</td></tr>
+<tr><th>Performance Metrics</th></tr>
+<tr>
+<td>
 
 
-
+  
+</td></tr>
+  
 </table>
 </center>
 
