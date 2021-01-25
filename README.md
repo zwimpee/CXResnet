@@ -51,27 +51,37 @@ This project is an attempt to produce an image classification model that can dis
 <table>
 
 <tr><th>Classification Report</th><th>Confusion Matrix</th></tr>
-<tr>
-<td>
+<tr><td>
 
-| Class  |   Precision    | Recall | F-1 Score | Support
+| Class  |   Precision    | Recall | F1-Score | Support
 | :--------: | :--------: | :--------: | :--------: | :--------: |
 | COVID  | 0.95 | 0.94 | 0.94 | 256
 | Normal | 0.92 | 0.96 | 0.94 | 654
 | Pneumonia | 0.97 | 0.95 | 0.96 | 935
 
 
-</td><td rowspan="3">
-
+</td>
+<td rowspan="3">
+  
 ![Confusion Matrix](figures/confusion_matrix.jpg "Confusion Matrix")
 
 </td></tr>
+
+
 <tr><th>Performance Metrics</th></tr>
-<tr>
-<td>
+<tr><td>
+ 
+| Metric | Score|
+| -------- | -------- |
+| Accuracy | 0.9507 |
+| Balanced Accuracy | 0.9481 |
+| Balanced Accuracy Weighted | 0.9507 |
+| ROC AUC | 0.9919 |
+| Macro F1-Score | 0.9479 |
+| Micro Average F1 | 0.9507 |
 
 
-  
+
 </td></tr>
   
 </table>
