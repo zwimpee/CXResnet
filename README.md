@@ -34,8 +34,16 @@ This project is an attempt to produce an image classification model that can dis
 - [ ] Get simple visual representation of model architecture
 - - -
 ### Training 
+<center>
+<table>
+<tr><th>Tracking model training</th></tr>
+<tr><td>
+  
 ![alt text](figures/acc_loss_epochs.png)
 
+</td></tr>
+</table>
+</center>
 
 - [ ] Describe the structure of the training code
 - [ ] Show plots of training history
