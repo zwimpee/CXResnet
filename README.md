@@ -36,7 +36,7 @@ This project is an attempt to produce an image classification model that can dis
 ### Training 
 <center>
 <table>
-<tr><th>Tracking model training</th></tr>
+<tr><th>Tracked Model Training</th></tr>
 <tr><td>
   
 ![alt text](figures/acc_loss_epochs.png)
@@ -45,8 +45,6 @@ This project is an attempt to produce an image classification model that can dis
 </table>
 </center>
 
-- [ ] Describe the structure of the training code
-- [ ] Show plots of training history
 - - -
 ### Testing
 <center>
